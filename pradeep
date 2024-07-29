@@ -1,0 +1,56 @@
+#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+
+pair<int, string> longestCommonSubstring(string s1, string s2) {
+    int n = s1.length();
+    if (n != s2.length()) {
+        cout << "Error: Strings are not of identical length." << endl;
+        return {0, ""};
+    }
+
+    vector<vector<int>> dp(n+1, vector<int>(n+1, 0));
+    int maxLength = 0;
+    int endIndex = 0;
+
+    // Populate the DP table and find the longest common substring
+    for (int i = 1; i <= n; i++) {
+        for (int j = 1; j <= n; j++) {
+            if (s1[i-1] == s2[j-1]) {
+                dp[i][j] = dp[i-1][j-1] + 1;
+                if (dp[i][j] > maxLength) {
+                    maxLength = dp[i][j];
+                    endIndex = i-1;
+                }
+            } else {
+                dp[i][j] = 0;
+            }
+        }
+    }
+
+    // Display the DP table
+    cout << "DP Table:" << endl;
+    for (int i = 0; i <= n; i++) {
+        for (int j = 0; j <= n; j++) {
+            cout << dp[i][j] << " ";
+        }
+        cout << endl;
+    }
+
+    string longestSubstring = s1.substr(endIndex - maxLength + 1, maxLength);
+    return {maxLength, longestSubstring};
+}
+
+int main() {
+    string s1 = "ABAB";
+    string s2 = "BABA";
+
+    auto result = longestCommonSubstring(s1, s2);
+    if (result.first > 0) {
+        cout << "Length of Longest Common Substring: " << result.first << endl;
+        cout << "Longest Common Substring: " << result.second << endl;
+    }
+
+    return 0;
+}
